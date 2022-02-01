@@ -35,7 +35,13 @@ namespace BETarjetas
 			});
 
       services.AddDbContext<ApplicationDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DevConnection")));
-		}
+      services.AddCors(o => o.AddPolicy("AllowWebApp", builder =>
+      {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+      }));
+    }
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -46,7 +52,7 @@ namespace BETarjetas
 				app.UseSwagger();
 				app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BETarjetas v1"));
 			}
-
+      app.UseCors("AllowWebApp");
 			app.UseHttpsRedirection();
 
 			app.UseRouting();
